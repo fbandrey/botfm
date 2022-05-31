@@ -1,0 +1,13 @@
+  <%- if rsses && rsses.any? -%>
+    <ol>
+      <%- rsses.each do |rss| -%>
+        <li <%= "class='selected'" if dj && rss.id == dj.id -%> id='dj_line_<%= rss.id -%>'>
+          <%= link_to_remote(rss.title, :url => dj && rss.id == dj.id ? stop_dj_main_path : play_dj_main_path(:id => rss.id), :complete => "refresh_playlist()", :class => "tooltip") -%>
+          <%#= link_to(image_tag("/images/rss.png", :style => "border:0;"), rss_root_url(:subdomain => rss.subdomain)) -%>
+          <span id="play"><%= link_to_remote("&nbsp;",  :url => dj && rss.id == dj.id ? stop_dj_main_path : play_dj_main_path(:id => rss.id)) -%></span>
+        </li>
+      <%- end -%>
+    </ol>
+  <%- else -%>
+    <p>Have no any DJs</p>
+  <%- end -%>

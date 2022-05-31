@@ -1,0 +1,38 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('rsses') -%>
+  </td><td>
+
+  <div id="admin_content">
+    <%- if @users && @users.any? -%>
+
+      <table style='margin-bottom:10px;'>
+        <tr>
+          <td style='color:#666;padding-right:20px;'><b>Пользователь</b></td>
+          <!-- <td style='color:#666;padding-right:20px;'><b>ID боткаста</b></td> -->
+          <td style='color:#666;padding-right:20px;'><b>Записи</b></td>
+        </tr>
+
+      <%- @users.each do |user| -%>
+        <tr>
+          <td><%= link_to(user.login, admin_rss_path(user)) -%></td>
+          <!-- <td align='center'><%#= rss.botcast_id ? rss.botcast_id : "-"-%></td> -->
+          <td align='center'><%= user.sounds_count -%></td>
+        </tr>
+      <%- end -%>
+      </table>
+
+    <%- else -%>
+        Нет пользователей
+    <%- end -%>
+
+    <!--
+    <%#- if permit?('admin') -%>
+      <div style='margin-top:20px;' class='system_menu'>
+        <%#= link_to 'Добавить RSS-ленту', new_admin_rss_path -%>
+      </div>
+    <%#- end -%>
+    -->
+  </div>
+</td></tr>
+</table>

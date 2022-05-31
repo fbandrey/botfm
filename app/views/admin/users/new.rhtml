@@ -1,0 +1,28 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('users') -%>
+  </td><td>
+  <div id="admin_content">
+
+<%= error_messages_for :user %>
+<% form_for :user, :url => admin_users_path do |f| -%>
+<p><label for="login">Логин</label><br/>
+<%= f.text_field :login %></p>
+
+<p><label for="email">E-mail</label><br/>
+<%= f.text_field :email %></p>
+
+<p><label for="password">Пароль</label><br/>
+<%= f.password_field :password %></p>
+
+<p><label for="password_confirmation">Подтверждение пароля</label><br/>
+<%= f.password_field :password_confirmation %></p>
+
+<p><%= f.check_box :is_admin %>&nbsp;<label for="user_is_admin">Администратор</label></p>
+
+<p><%= submit_tag 'Добавить' %> <%= link_to('Назад', admin_users_path) -%></p>
+<% end -%>
+
+  </div>
+</td></tr>
+</table>

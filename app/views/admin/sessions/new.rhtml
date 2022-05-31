@@ -1,0 +1,9 @@
+<%- form_tag admin_session_path do -%>
+<p style='margin:10px 0 0;'><label for="login">Логин</label><br/>
+<%= text_field_tag 'login' -%></p>
+
+<p style='margin:10px 0 0;'><label for="password">Пароль</label><br/>
+<%= password_field_tag 'password' -%></p>
+
+<p style='margin:10px 0 0;'><%= submit_tag 'Войти' -%> <%= link_to "На главную", "/" -%></p>
+<%- end -%>

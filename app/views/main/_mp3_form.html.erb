@@ -1,0 +1,26 @@
+<tr>
+  <td>
+    <%= file_field_tag "files[uploaded_data][]", :size => "34", :class => "file_input" -%>
+  </td>
+  <td>
+    <select id='files_categories_' name='files[categories][]' class='cat_select'>
+      <%- if @tags_moods && @tags_moods.any?
+
+          anything_tag = @tags_moods.select{|tag| tag.name.eql?("всякое")}.first
+          @tags_moods.delete_if{|tag| tag.name.eql?("всякое")}
+          @tags_moods = [anything_tag] + @tags_moods.sort_by(&:name)
+
+          @tags_moods.each do |t| -%>
+            <option value='<%= t.id -%>'><%= t.name -%></option>
+        <%- end -%>
+              <option disabled>-------------------------</option>
+        <%- end -%>
+
+      <%- if @tags_direct && @tags_direct.any? -%>
+        <%- @tags_direct.sort_by(&:name).each do |t| -%>
+          <option value='<%= t.id -%>'><%= t.name -%></option>
+        <%- end -%>
+      <%- end -%>
+    </select>
+  </td>
+</tr>

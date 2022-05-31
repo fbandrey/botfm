@@ -1,0 +1,39 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('songs') -%>
+  </td><td>
+  <div id="admin_content">
+
+<%- if @songs && @songs.any? -%>
+
+  <table style='margin-top:10px; margin-bottom:10px;'>
+    <tr>
+      <td style='color:#666;padding-right:20px;'><b>ID</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Название</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Теги</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Хозяин</b></td>
+      <td style='color:#666;'><b>Действия</b></td>
+    </tr>
+
+  <%- @songs.each do |song| -%>
+    <tr>
+      <td><%= song.id -%></td>
+      <td><%= crop_text(mp3_fullname(song), 50) rescue song.filename -%></td>
+      <td><%= song.tags.map(&:name).join(', ') -%></td>
+      <td><%= song.user.login if song.user -%></td>
+      <td>
+        <center>
+          <%= (link_to(image_tag('/images/delete.png', :style => 'border:0;'), admin_song_path(song), :method => :delete, :confirm => "Удалить mp3-файл 'ID#{song.id}'?")) if permit?('admin') -%>
+        </center>
+      </td>
+    </tr>
+  <%- end -%>
+  </table>
+
+<%- else -%>
+    Нет ни одного mp3-файла
+<%- end -%>
+
+  </div>
+</td></tr>
+</table>

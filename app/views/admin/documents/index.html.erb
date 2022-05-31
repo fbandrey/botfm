@@ -1,0 +1,47 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('docs') -%>
+  </td><td>
+  <div id="admin_content">
+
+<%- if permit?('admin') -%>
+  <div style='margin:5px 0;' class='system_menu'>
+    <%= link_to 'Добавить документ', new_admin_document_path -%>
+  </div>
+<%- end -%>
+
+
+<%- if @documents && @documents.any? -%>
+
+  <table style='margin-top:10px; margin-bottom:10px;'>
+    <tr>
+      <td style='color:#666;padding-right:20px;'><b>ID</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Название</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Статус</b></td>
+      <td style='color:#666;padding-right:20px;'><b>Главная подсказка</b></td>
+      <td style='color:#666;'><b>Действия</b></td>
+    </tr>
+
+  <%- @documents.each do |t| -%>
+    <tr>
+      <td><%= t.id -%></td>
+      <td><%= crop_text(t.title,30)-%></td>
+      <td><%= t.is_published ? "<span style='color:green;'>опубликован</span>" : "не активен" -%></td>
+      <td align="center"><%= t.for_main_hint ? "<span style='color:red; font-size:20px;'>+</span>" : "—" -%></td>
+      <td>
+        <center>
+          <%= link_to(image_tag('/images/edit.png', :style => 'border:0;'), edit_admin_document_path(t))  -%>
+          <%= (link_to(image_tag('/images/delete.png', :style => 'border:0;'), admin_document_path(t), :method => :delete, :confirm => "Удалить документ \"#{t.title}\"?")) if permit?('admin') -%>
+        </center>
+      </td>
+    </tr>
+  <%- end -%>
+  </table>
+
+<%- else -%>
+    Нет ни одного документа
+<%- end -%>
+
+  </div>
+</td></tr>
+</table>

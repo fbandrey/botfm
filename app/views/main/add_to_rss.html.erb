@@ -1,0 +1,45 @@
+<script>
+  function qweqwe(){
+    new Ajax.Request("/items?text="+$('item_content').value+"&id="+Math.floor(Math.random()*10000000000), {
+      method: 'post',
+      onSuccess: function(transport) {
+        alert(transport.responseText);
+      },
+      onFailure: function() {
+        alert('Ошибка соединения с Интернет');
+      }
+    });
+  }
+</script>
+<h2 style='margin-bottom:15px;'>Добавить свою новость</h2>
+
+<%= "<b style='color:red;'>Вы вошли как админ! Запись не будет сохранена!</b><br/>" if logged_in? && permit?('admin|editor') -%>
+
+<%- form_tag text_to_voice_main_path do |f| -%>
+  <input type="hidden" id="text" name="text" value="<%= @text -%>"/>
+  <div style="float:left; width:550px;">
+    <%- main_text = crop_text(@text, Sound::ITEM_LENGTH,"") -%>
+    <div style="width:500px;padding:10px;border:1px dashed #999;font-size:12px;margin-bottom:7px;color:red;" id="main_text"><%= @text.gsub(main_text, "<span style='color:black;'>"+main_text+"</span>") -%></div>
+    <span style='font-size:11px;'>Кол-во знаков: <%= @text.mb_chars.size >= Sound::ITEM_LENGTH ? "<span style='color:red;'>#{@text.mb_chars.size}</span>" : @text.mb_chars.size -%> / <%= Sound::ITEM_LENGTH -%></span>
+  </div>
+  <div style="float:left; width:350px;">
+    <b>Голоса:</b><br/>
+      <%- Sound::VOICES_RUS.each_with_index do |name, ind| -%>
+        <input type="radio" id="voice_<%= ind+1 -%>" name="voice" style="margin:0 10px 0 0" value="<%= ind+1 -%>" <%= "checked" if ind.zero? -%>>
+        <label for="voice_<%= ind+1 -%>"><%= name -%></label>
+        <br/>
+      <%- end -%>
+  </div>
+  <div style='clear:both;'></div>
+
+  <div class="add_buttons" style='margin-top:10px;' id='div_buttons'>
+    <div style="float:left;margin-right:10px;"><%= submit_tag 'Сохранить', :onclick => "$('div_buttons').hide(); $('div_info').show();" -%> </div>
+    <div style='float:left;'><input type='button' onClick="window.location='<%= @back_url && !@back_url.blank? ? @back_url : "/" -%>'" value="Назад"/></div>
+    <div style='clear:both;'></div>
+  </div>
+
+  <div style='margin-top:10px; display:none; font-size:12px;' id='div_info'>
+    Подождите, конвертация...<br/>
+    <img src='/images/loader.gif' width="160"/>
+  </div>
+<%- end -%>

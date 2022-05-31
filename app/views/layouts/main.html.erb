@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Nobile:regular,bold' rel='stylesheet' type='text/css'/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta name='yandex-verification' content='5b04e8ffa80f697e' />
+    <META name="y_key" content="aa8b5025edb228dd" />
+    <meta name="msvalidate.01" content="E263703B77FAF4BB6C4D7092C557F031" />
+    <meta name="keywords" content='радио прямой эфир, радио онлайн, бесплатное радио, радио бесплатно, слушать радио, интернет радиостанция, интернет-радио, вещание онлайн, музыкальное радио, альтернативные новости, радио фм, бот фм, автоматическая озвучка, озвучивание новостей, новости озвучка,  онлайн озвучка' />
+    <meta name="description" content='"Bot.fm – создание и трансляция музыки и новостей. Музыка твоего настроения – твоя новая радиосвобода.' />
+
+    <%- !@page_title || @page_title.empty? ? @page_title = "Bot.FM" : @page_title = @page_title + " — Bot.FM" -%>
+    <title><%= @active_dj ? "DJ #{@active_dj.name} на Bot.FM" : @page_title -%></title>
+
+    <%= stylesheet_link_tag "bot" -%>
+    <%= javascript_include_tag 'prototype', 'botfm', 'addtorss', 'swfobject', :cache => true -%>
+    <script type="text/javascript" src="/javascripts/scriptaculous.js?load=effects"></script>
+
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <!--[if IE 5]>
+    <style type="text/css"> 
+    /* place css box model fixes for IE 5* in this conditional comment */
+    .thrColAbsHdr #sidebar1 { width: 180px; }
+    .thrColAbsHdr #sidebar2 { width: 190px; }
+    </style>
+    <![endif]-->
+
+    <script type="text/javascript">
+        mass_tags = [];
+        function toggleDiv(div_name){
+          $(div_name).toggle();
+        }
+	
+	function close_notice(){
+	  if ($('dialog_message_notice')){$('dialog_message_notice').hide();}
+	  if ($('dialog_message_error')){$('dialog_message_error').hide();}
+	}
+        function MM_swapImgRestore() {
+          var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+        }
+        function MM_preloadImages() {
+          var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+            var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+            if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+        }
+
+        function MM_findObj(n, d) {
+          var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+            d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+          if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+          for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+          if(!x && d.getElementById) x=d.getElementById(n); return x;
+        }
+
+        function MM_swapImage() {
+          var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+           if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+        }
+    </script>
+
+    <%= include_tiny_mce_if_needed %>
+    <%= yield :js -%>
+
+</head>
+
+<body class="oneColLiqCtrHdr" onLoad="<%= "MM_preloadImages('/images/refresh_h.png')" unless (logged_in? && permit?("admin")) || (params[:controller] == "admin/sessions" && params[:action] == "new") -%>">
+  <div id='container'>
+
+    <div id="header" style="margin-bottom:20px;">
+      <h1><a href="/" title="bot.fm"><img src="/images/logo.gif" style="border:0;"/></a></h1>
+      <%- if (params[:controller] == "main" && params[:action] == "index") || params[:controller] == 'djs' -%>
+        <div id="main_player_div">
+          <%= link_to_function(image_tag("/images/bot_play.gif", :style => "border:0;", :id => "play_button_main"), "toggleButton('main')", :style => "border:0;") -%>
+        </div>
+      <%- end -%>
+
+        <%- if logged_in? -%>
+            <div id="player" style='margin-top:25px; font-size:13px;'>
+              <%- if permit?('admin') -%>
+                <span style='color:red;'>Admin:</span>
+                &nbsp;
+                <%- admin_user = User.first(:conditions => "login = 'admin' AND id IN(#{Role.find_by_title("admin").users.map(&:id).join(',')})") -%>
+                Озвучки <%= admin_user.stop_sounds ? "<span style='color:red;'>отключены!</span>" : "включены" -%>
+                (<%= link_to("#{admin_user.stop_sounds == false ? "Отключить" : "Включить"}", toggle_soungs_admin_users_path) if admin_user -%>)
+              <%- else -%>
+                <div style="margin: 0px 10px; padding: 0px; float: left; color: rgb(153, 153, 153); text-transform:none;">DJ <%= current_user.name -%>:</div>
+                <%= link_to("Мой боткаст", "/playlist") -%>
+                &nbsp;|&nbsp;
+                <%= link_to("Загрузить mp3", "/upload") -%>
+                &nbsp;|&nbsp;
+                <%= link_to("Мой профиль", "/profile") -%>
+              <%- end -%>
+              &nbsp;|&nbsp;
+              <%= link_to("Форум", "http://s109267103.onlinehome.us/ubot/botfm/ru/forum/", :target => "_blank") -%>
+              &nbsp;|&nbsp;
+              <%= link_to("Выйти", session_path, :method => :delete) -%>
+            </div>
+        <%- else -%>
+            <div id="player">
+              <div id="login_close" style="<%= "display:none;" if params[:authorize] -%>">
+                <a href="#" onclick="toggleDiv('login_div'); toggleDiv('login_close'); return false">Вход</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <%= params[:controller] == "main" && params[:action] == "registration" ? "Регистрация" : link_to("Регистрация", "/registration") -%>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <%= link_to("Форум", "http://s109267103.onlinehome.us/ubot/botfm/ru/forum/", :target => "_blank") -%>
+              </div>
+
+              <div id='login_div' style='<%= "display:none;" unless params[:authorize] -%>'>
+                  <form action="/session" method="post" id="login_form">
+                    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token -%>" />
+                    <div id='login'><%= text_field_tag 'login', "", :style => "margin:0;" -%></div>
+                    <div id='login'><%= password_field_tag 'password' -%></div>
+                    <div id='login_enter'><%= submit_tag 'Войти' -%></div>
+                    <div id="reminder"><a href="/remind">забыли пароль?</a>&nbsp;&nbsp;&nbsp;<%= link_to("еще не зарегились?", "/registration") -%><!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="remember" type="checkbox" value="" />&nbsp;remember me--></div>
+                  </form>
+              </div>
+            </div>
+        <%- end -%>
+        <div style='clear:both; height:10px;'></div>
+        <%= print_flash_message -%>
+
+    <%- unless (logged_in? && permit?("admin")) || (params[:controller] == "admin/sessions" && params[:action] == "new") -%>
+      <div style="background-color:#EFEFEF;">
+        <div id='help_content_div'>
+          <%= params[:controller] == 'tags' && params[:action] == 'show' ? "Метка: #{@tag.name}" : Document.published.first(:conditions => {:for_main_hint => true}).title rescue "" -%>
+        </div>
+        <div id="play_now_div">
+        </div>
+
+        <div style='float:right; padding:5px;'>
+          <a href="#" onClick="new Effect.toggle('main_help_content', 'slide', {duration: 1});" style="border:0;"><img src="/images/help.png" title="Вопросы?" style="text-decoration:none; border:0;"/></a>
+        </div>
+        <div style='clear:both;'></div>
+      </div>
+
+      <div id='main_help_content' style='overflow:visible; display:none;'>
+        <div style='clear:both; height:10px;'></div>
+        <%= Document.published.first(:conditions => {:for_main_hint => true}).text rescue "" -%>
+        <div style='clear:both; height:10px;'></div>
+      </div>
+      <div style='clear:both; height:10px;'></div>
+
+    <%- end -%>
+
+    <%= yield -%>
+    <div style='clear:both;'></div>
+
+  </div>
+  <div id='footer'>
+      <!--
+      <object height="23" width="68" type="application/x-shockwave-flash" data="/player_mp3_maxi.swf">
+        <param value="/player_mp3_maxi.swf" name="movie"/>
+        <param value="#ffffff" name="bgcolor"/>
+        <param value="mp3=http://tts.speechpro.com/temp/6ce6dc35-16e5-4ffa-88ab-61ddc8658bd7.mp3&amp;width=68&amp;height=23&amp;showvolume=1&amp;showslider=0&amp;buttonwidth=34&amp;volumewidth=34&amp;volumeheight=8&amp;bgcolor=171717" name="FlashVars"/>
+      </object> -->
+
+      <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-7186455-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+      </script>
+
+    <%- unless (logged_in? && permit?("admin")) || (params[:controller] == "admin/sessions" && params[:action] == "new") -%>
+      <!--Openstat-->
+        <span id="openstat2137603"></span>
+        <script type="text/javascript">
+          var openstat = { counter: 2137603, image: 5042, next: openstat, track_links: "all" }; document.write(unescape("%3Cscript%20src=%22http" + (("https:" == document.location.protocol) ? "s" : "") + "://openstat.net/cnt.js%22%20defer=%22defer%22%3E%3C/script%3E"));
+        </script>
+      <!--/Openstat-->
+
+      <!--<script src="http://cdn.wibiya.com/Toolbars/dir_0641/Toolbar_641326/Loader_641326.js" type="text/javascript"></script>
+      <noscript><a href="http://www.wibiya.com/">Web Toolbar by Wibiya</a></noscript>-->
+    <%- end -%>
+  </div>
+
+</body>
+</html>
+<%- flash[:notice] = flash[:errors] = nil -%>

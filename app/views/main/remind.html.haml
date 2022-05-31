@@ -1,0 +1,20 @@
+#secondaryContent
+  #subscribe
+    %h2{:style => "margin-bottom:25px;"}= "Восстановление пароля"
+
+    %form{:action => send_password_main_path, :method => "post"}
+      %input{:type => "hidden", :name => "authenticity_token", :value => form_authenticity_token}
+      %div{:style => "float:left; width:400px;"}
+        по логину
+        %br
+        = text_field_tag 'login', "", :style => "background-color:#F6FFEA; border:1px solid #666666; font-size:14px; line-height:16px; margin:2px 0 0; padding:2px 0 5px 5px; width:200px;"
+
+
+      %div{:style => "float:left; width:400px;"}
+        по e-mail
+        %br
+        = text_field_tag 'email', "", :style => "background-color:#F6FFEA; border:1px solid #666666; font-size:14px; line-height:16px; margin:2px 0 0; padding:2px 0 5px 5px; width:200px;"
+
+      %div{:style => "clear:both; height:50px;"}
+      %div{:style => "text-align:center; width:600px;"}
+        = submit_tag "Отправить", :class => "button_input", :style => "width:120px;"

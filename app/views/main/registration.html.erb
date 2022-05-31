@@ -1,0 +1,177 @@
+<%- content_for :js do -%>
+  <style>
+    .red_input {
+      color: red;
+    }
+
+    .text_input_private {
+      background-color:#F6FFEA;
+      border:1px solid #666666;
+      font-size:14px;
+      font-weight:normal;
+      line-height:16px;
+      margin:2px 0 0;
+      padding:2px 0 5px 5px;
+      width:200px;
+    }
+  </style>
+  <script>
+    function check_case(){
+      $('user_login').value = $('user_login').value.toLowerCase();
+    }
+
+    function check_lang(){
+      if (/^[a-zA-Z0-9]+$/.test($('user_login').value)){
+        $('user_login').removeClassName('red_input');
+      }else{
+        $('user_login').addClassName('red_input');
+      }
+    }
+  </script>
+<%- end -%>
+
+
+<h2><%= logged_in? ? "Мой профиль" : "Зарегистрируйся и начни вещать!" -%></h2>
+<div id="secondaryContent" style='overflow: visible; height: 100%;'>
+  <div id="subscribe">
+
+<!-- 1. Чем больше файлов вы закачиваете – тем интереснее ваш боткаст.
+2. Чем интереснее ваш боткаст - тем больше его слушают.
+3. Чем больше ваш боткаст слушают - тем больше у вас шансов получить Еженедельный Приз.
+
+ЗЫ И не забывайте ставить аватары - так вас легче найти! -->
+
+    <%- form_for :user, :url => logged_in? ? update_profile_main_path : create_user_main_path, :html => {:multipart => true, :method => 'post'} do |f| -%>
+      <div id="lists" style='min-width:900px;width:100%;background:#FFFFFF;'>
+        <ul style="width:206px;">
+          <li>
+            <label for="user_login">логин<span style='color:red;'>*</span></label><br/>
+            <div id="register">
+              <%= f.text_field :login, :class => "text_input_private #{"red_border" if @user &&  @user.errors[:login]}", :maxlength => 20, :onKeyUp => "check_lang()" -%></p>
+            </div>
+          </li>
+
+          <li>
+            <label for="user_email">электропочта<span style='color:red;'>*</span></label><br/>
+            <div id="register">
+              <%= f.text_field :email, :class => "text_input_private #{"red_border" if @user && @user.errors[:email]}", :maxlength => 40 -%></p>
+            </div>
+          </li>
+
+          <li><label for="user_password">пароль<%= "<span style='color:red;'>*</span>" unless logged_in? -%></label><br/>
+            <div id="register">
+              <%= f.password_field :password, :class => "text_input_private #{"red_border" if @user && @user.errors[:password]}", :maxlength => 20, :value => "" -%></p>
+            </div>
+          </li>
+
+          <li><label for="user_password_confirmation">ещё раз пароль<%= "<span style='color:red;'>*</span>" unless logged_in? -%></label><br/>
+            <div id="register">
+              <%= f.password_field :password_confirmation, :class => "text_input_private #{"red_border" if @user && @user.errors[:password_confirmation]}", :maxlength => 20, :value => "" -%></p>
+            </div>
+          </li>
+        </ul>
+
+
+        <ul>
+          <li><label for='user_name'>название боткаста<span style='color:red;'>*</span></label><br/>
+            <div id="register">
+              <%= f.text_field :name, :class => "text_input #{"red_border" if @user && @user.errors[:name]}", :maxlength => 30 -%></p>
+            </div>
+          </li>
+            
+          <li><label for='user_homepage'>адрес вашего сайта </label><br/>
+            <div id="register">
+              <%= f.text_field :homepage, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+          <li><label for='user_icq'>ICQ</label><br/>
+            <div id="register">
+              <%= f.text_field :icq, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+
+          <li><label for='user_facebook'>Адрес ВКонтакте</label><br/>
+            <div id="register">
+              <%= f.text_field :facebook, :class => "text_input", :maxlength => 30 -%></p>
+              </div>
+          </li>
+        </ul>
+
+
+        <ul>
+          <li><label for='user_skype'>Skype</label><br/>
+            <div id="register">
+              <%= f.text_field :skype, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+
+          <li><label for='user_twitter'>Twitter</label><br/>
+            <div id="register">
+              <%= f.text_field :twitter, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+
+          <li><label for='user_myspace'>MySpace</label><br/>
+            <div id="register">
+              <%= f.text_field :myspace, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+
+          <li><label for='user_promodj'>Promo DJ</label><br/>
+            <div id="register">
+              <%= f.text_field :promodj, :class => "text_input", :maxlength => 30 -%></p>
+            </div>
+          </li>
+        </ul>
+
+
+        <ul style='margin-right:0;'>
+          <li><label for='user_description'>краткое описание боткаста<span style='color:red;'>*</span></label><br/>
+            <div id="register">
+              <textarea id='user_description' name="user[description]" wrap="virtual" class='text_input <%= "red_border" if @user && @user.errors[:description] -%>' style='width:285px; height:175px;'><%= @user.description if @user -%></textarea>
+            </div>
+          </li>
+        </ul>
+
+        <div style='clear:both;'></div>
+
+        <!--
+        <ul style="width:206px;">
+          <li>
+            <div id="register">
+              <%- n = -1 -%>
+              <%- selected_theme = logged_in? ? current_user.color_theme : 0 -%>
+              <%- User::COLOR_THEMES.each do |k, v| -%>
+                <%- n += 1 -%>
+                <%= f.radio_button :color_theme, k, :checked => k == selected_theme ? "checked" : "false" -%>
+                <label for="user_color_theme_<%= k -%>"> — color theme "<%= v -%>"</label><br/>
+              <%- end -%>
+            </div>
+          </li>
+        </ul>
+        -->
+
+        <ul>
+          <li>аватар<br/>
+            <div id="register">
+              <%= image_tag(current_user.photo.public_filename(:main), :style => "border:2px solid black; float:left; margin-right:5px;") if logged_in? && current_user.photo -%>
+              <%#= f.file_field :uploaded_data, :class => "text_input" -%>
+              <input type="file" name="photo[uploaded_data]" id="photo_uploaded_data" class="text_input_private" style='width:300px;'/>
+              <div style='clear:both;'></div>
+            </div>
+          </li>
+        </ul>
+
+        <ul style="float:right; margin:12px 14px 0 0;">
+          <li>
+            <div id="register">
+              <%= f.submit logged_in? ? "Сохранить" : "Зарегиться", :class => "button_input", :style => "width:100px;" -%>
+            </div>
+          </li>
+        </ul>
+
+        <div style='clear:both;'></div>
+      </div>
+    <%- end -%>
+  </div>
+</div>

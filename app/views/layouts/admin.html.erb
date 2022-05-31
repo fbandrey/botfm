@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <%- @page_title = "Bot.FM || administration" if !@page_title || @page_title.empty? -%>
+    <title><%= @page_title -%></title>
+    <%= stylesheet_link_tag "admin" -%>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <%= javascript_include_tag 'prototype' -%>
+    <%= javascript_include_tag 'effects' -%>
+    <%= include_tiny_mce_if_needed %>
+    <%= yield :js -%>
+</head>
+<body>
+
+    <%= yield -%>
+
+</body>
+</html>

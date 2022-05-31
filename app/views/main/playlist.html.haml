@@ -1,0 +1,80 @@
+%h2= "Мой боткаст"
+%div{:style => "clear:both; height:10px;"}
+
+%div{:style => "width:450px; float:left; border-right:2px dotted #999; margin-right:20px;padding-right:20px;"}
+  mp3-файлы
+  %div{:style => "clear:both; height:10px;"}
+  - my_songs = current_user.songs
+  - if my_songs && my_songs.any?
+    - my_songs.each do |song|
+      %div{:style => "padding:0 0 10px 0; margin: 0 0 10px 0; border-bottom:1px dotted #999; font-size: 14px;"}
+        %a{:name => "song_#{song.id}"}
+        = mp3_fullname(song) rescue song.filename
+        %div{:style => "clear:both;"}
+
+        %div{:style => "float:left;"}
+          %object{:type => 'application/x-shockwave-flash', :data => '/player_mp3_maxi.swf', :width => '200', :height => '30'}
+            %param{:name => 'movie', :value => '/player_mp3_maxi.swf'}
+            %param{:name => 'bgcolor', :value => '#ffffff'}
+            %param{:name => 'FlashVars', :value => "mp3=#{song.public_filename}&amp;showvolume=1&amp;showslider=1&amp;showloading=never&amp;buttonovercolor=99cc00&amp;showstop=1&amp;sliderovercolor=99cc00"}
+          = link_to(image_tag('/images/delete.png', :style => "border:0; margin-bottom:7px;"), delete_song_main_path(:id => song.id), :confirm => "Удалить файл '#{song.filename}'?", :style => "font-size:10px;border:0;")
+        %div{:style => "float:left; padding:11px 0 0 7px; font-size:10px; color:#666;"}
+          %span
+            = "#{song.created_at.strftime("%d.%m.%Y")}"
+        %div{:style => "clear:both;"}
+          - form_tag change_tag_tags_path, :id => "tag_form_#{song.id}" do
+            %span{:style => "color:#666;"}
+              Тег: 
+            %input{:type => "hidden", :value => song.id, :id => "song", :name => "song"}
+            %select{:id => "tag", :name => "tag"}
+              - if @tags_moods && @tags_moods.any?
+                - anything_tag = @tags_moods.select{|tag| tag.name.eql?("всякое")}.first
+                - @tags_moods.delete_if{|tag| tag.name.eql?("всякое")}
+                - @tags_moods = [anything_tag] + @tags_moods.sort_by(&:name)
+
+                - @tags_moods.each do |t|
+                  = "<option value='#{t.id}' #{"selected" if t.id == song.tags.first.id}>#{t.name}</option>"
+              = "<option disabled>-------------------------</option>"
+
+              - if @tags_direct && @tags_direct.any?
+                - @tags_direct.sort_by(&:name).each do |t|
+                  = "<option value='#{t.id}' #{"selected" if t.id == song.tags.first.id}>#{t.name}</option>"
+
+            = link_to("Изменить", "#", :onClick => "$('tag_form_#{song.id}').submit(); return false;")
+        %div{:style => "clear:both;"}
+  - else
+    %span{:style => "font-size:14px;"}
+      Вы не загрузили ни одной песни. Это можно сделать <a href='/upload'>здесь</a>!
+
+%div{:style => "width:450px; float:left;"}
+  голосовые записи
+  %div{:style => "clear:both; height:10px;"}
+  - my_sounds = current_user.sounds
+  - if my_sounds && my_sounds.any?
+    - my_sounds.each do |sound|
+      %div{:style => "padding:0 0 5px 0; margin: 0 0 10px 0; border-bottom:1px dotted #999; font-size: 14px;"}
+        %div{:id => "sound_text_preview_#{sound.id}"}
+          = crop_text(sound.text, 100)
+          = link_to_function("<nobr>полностью »</nobr>", "$('sound_text_preview_#{sound.id}').hide(); $('sound_text_#{sound.id}').show();")
+        %div{:id => "sound_text_#{sound.id}", :style => "display:none;"}
+          = sound.text
+          &nbsp;
+          = link_to_function("<nobr>« свернуть</nobr>", "$('sound_text_preview_#{sound.id}').show(); $('sound_text_#{sound.id}').hide();")
+        %div{:style => "clear:both; height:10px;"}
+
+        %div{:style => "float:left;"}
+          %object{:type => 'application/x-shockwave-flash', :data => '/player_mp3_maxi.swf', :width => '200', :height => '30'}
+            %param{:name => 'movie', :value => '/player_mp3_maxi.swf'}
+            %param{:name => 'bgcolor', :value => '#ffffff'}
+            %param{:name => 'FlashVars', :value => "mp3=#{sound.link}&amp;showvolume=1&amp;showslider=1&amp;showloading=never&amp;buttonovercolor=99cc00&amp;showstop=1&amp;sliderovercolor=99cc00"}
+          = link_to(image_tag('/images/delete.png', :style => "border:0; margin-bottom:7px;"), delete_sound_main_path(:id => sound.id), :confirm => "Удалить файл:\n'#{crop_text(sound.text,50)}'?", :style => "font-size:10px;border:0;")
+        %div{:style => "float:left; padding:11px 0 0 7px; font-size:10px; color:#666;"}
+          %span
+            = sound.created_at.strftime("%d.%m.%Y")
+        %div{:style => "clear:both;"}
+  - else
+    %span{:style => "font-size:14px;"}
+      Вы не создали ни одной голосовой новости. 
+
+
+%div{:style => "clear:both;"}

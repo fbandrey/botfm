@@ -1,0 +1,8 @@
+<strong>Selected tags:</strong>
+<%- if tags && tags.any? -%>
+  <%- tags.each do |tag| -%>
+    <%= link_to_remote(tag.name, :url => remove_tag_from_playlist_main_path(:id => tag.id), :complete => "refresh_playlist()") -%>
+  <%- end -%>
+<%- else -%>
+  &nbsp; —
+<%- end -%>

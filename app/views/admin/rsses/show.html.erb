@@ -1,0 +1,31 @@
+<table border="0">
+  <tr><td>
+    <%= admin_menu('rsses') -%>
+  </td><td>
+
+  <div id="admin_content">
+<h2>Лента пользователя: <%= @user.login -%></h2>
+<div>
+  <%- if @user.sounds && @user.sounds.any? -%>
+    <%- @user.sounds.each do |sound| -%>
+      <div style='border:1px dashed #666; padding:10px; margin-bottom:10px;'>
+        <span style='color:white; background-color:#999999;'>&nbsp;text&nbsp;</span>&nbsp;<%= sound.text ? crop_text(sound.text, 200) : "Нет контента" -%>
+        <div style='clear:both; height:5px;'></div>
+        <span style='color:white; background-color:#999999;'>&nbsp;link&nbsp;</span>&nbsp;<%= link_to(sound.link, sound.link) -%>
+        <div style='clear:both; height:5px;'></div>
+        <span style='color:green; font-size:10px;'><%= sound.created_at.strftime('%d.%m.%Y &nbsp; %H:%M:%S') -%></span>
+        <div style='clear:both;'></div>
+        <object type='application/x-shockwave-flash' data='/player_mp3_maxi.swf' width='200' height='30'>
+            <param name='movie' value='/player_mp3_maxi.swf' />
+            <param name='bgcolor' value='#ffffff' />
+            <param name='FlashVars' value='mp3=<%= sound.link -%>&amp;showvolume=1&amp;showslider=1&amp;showloading=never&amp;buttonovercolor=99cc00&amp;showstop=1&amp;sliderovercolor=99cc00' />
+        </object>
+        <%= (link_to(image_tag('/images/delete.png', :style => "border:0; margin-bottom:7px;"), admin_sound_path(sound), :method => :delete, :confirm => "Удалить запись ID'#{(sound.id)}'?", :style => "font-size:10px;")) if permit?('admin') -%>
+      </div>
+    <%- end -%>
+  <%- else -%>
+    В этой ленте нет ни одной записи
+  <%- end -%>
+</div>
+</td></tr>
+</table>

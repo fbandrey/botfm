@@ -1,0 +1,23 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('tags') -%>
+  </td><td>
+  <div id="admin_content">
+
+<h2>Редактирование тега</h2> 
+<%= error_messages_for :tag -%>
+
+<%- form_for (:tag, :url => admin_tag_path, :html => {:method => 'put'}) do |f| -%>
+
+  <p style='margin-top:0;'><label for="tag_name">Название</label><br/>
+  <%= f.text_field :name -%></p>
+
+  <p><%= f.check_box :is_mood, :style => "margin-left:0;" -%>&nbsp;<label for="tag_is_mood">Настроение</label></p>
+
+  <p style='margin-top:10px;'><%= submit_tag 'Изменить' -%> <%= link_to('Назад', admin_tags_path) -%></p>
+<%- end -%>
+
+  </div>
+</td></tr>
+</table>
+

@@ -1,0 +1,38 @@
+<%= print_flash_message -%>
+<%- if @tag -%>
+  <h2>Радио: <%= @tag.name -%></h2>
+  
+  <div style='clear:both; height:10px;'></div>
+
+  <b>RSS-ленты:</b><br/>
+  <%- if @rsses && @rsses.any? -%>
+    <%- @rsses.each do |rss| -%>
+      <div style='margin:0 0 10px 10px;'>
+        <%- if rss.sounds && rss.sounds.any? -%>
+          <%= rss.title -%> | tags: <%= rss.tags.map(&:name).join(', ') -%><br/>
+          <%- rss.sounds.each do |sound| -%>
+            --- <%= sound.link -%><br/>
+          <%- end -%>
+        <%- end -%>
+      </div>
+    <%- end -%>
+  <%- else -%>
+    <div style='margin:0 0 10px 10px; color:red;'>
+      Нет RSS-лент для данного тега
+    </div>
+  <%- end -%>
+
+
+  <b>mp3-файлы:</b><br/>
+  <%- if @songs && @songs.any? -%>
+    <%- @songs.each do |song| -%>
+      <div style='margin:0 0 10px 10px;'>
+        <%= song.filename -%> | tags: <%= song.tags.map(&:name).join(', ') -%>
+      </div>
+    <%- end -%>
+  <%- else -%>
+    <div style='margin:0 0 10px 10px; color:red;'>
+      Нет mp3-файлов для данного тега
+    </div>
+  <%- end -%>
+<%- end -%>

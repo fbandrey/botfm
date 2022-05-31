@@ -1,0 +1,12 @@
+<%- if tags && tags.any? -%>
+  <ol>
+    <%- tags.each do |tag| -%>
+      <li>
+        <%= link_to_remote(tag.name, :url => add_tag_to_playlist_main_path(:id => tag.id), :complete => "refresh_playlist()") -%>
+        <span id="plus"><%= link_to_remote("&nbsp;", :url => add_tag_to_playlist_main_path(:id => tag.id)) -%></span>
+      </li>
+    <%- end -%>
+  </ol>
+<%- else -%>
+  <p>Have no any tags</p>
+<%- end -%>

@@ -1,0 +1,23 @@
+<table border="0">
+  <tr><td>
+    <%= admin_menu('rsses') -%>
+  </td><td>
+
+  <div id="admin_content">
+<h2>Добавление RSS-ленты</h2>
+
+<%= error_messages_for :rss -%>
+
+<%- form_for (:rss, :url => admin_rsses_path, :html => {:multipart => true, :method => 'post'}) do |f| -%>
+
+  <p><label for="rss_title">Название</label><br/>
+  <%= f.text_field :title -%></p>
+
+  <p><label for="rss_description">Описание</label><br/>
+  <%= f.text_area :description, :style => 'width:300px; height:150px;' -%></p>
+
+  <p><%= submit_tag 'Добавить' %> <%= link_to('Назад', admin_rsses_path) -%></p>
+<%- end -%>
+  </div>
+</td></tr>
+</table>

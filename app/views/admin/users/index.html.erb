@@ -1,0 +1,27 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('users') -%>
+  </td><td>
+  <div id="admin_content">
+
+<%- if logged_in? && permit?('admin') -%>
+  <div style='margin-bottom:30px;' class='system_menu'>
+    <%= link_to 'Добавить пользователя', new_admin_user_path -%>
+  </div>
+<%- end -%>
+
+<%- @users.each do |user| -%>
+  <div style='margin-bottom:5px;'>
+    <%= logged_in? && permit?('admin') ? link_to(user.login, edit_admin_user_path(user)) : user.login -%>
+    <%= "<span style='color:red; font-weight:bold;'>*</span>" if user.is_admin -%>
+    <%= (link_to(image_tag('/images/delete.png', :style => 'border:0;'), admin_user_path(user), :method => :delete)) if logged_in? && permit?('admin') -%>
+  </div>
+<%- end -%>
+
+<div style="font-size:14px; margin-top:20px;">
+  <span style='color:red; font-weight:bold;'>*</span> - администраторы
+</div>
+
+  </div>
+</td></tr>
+</table>

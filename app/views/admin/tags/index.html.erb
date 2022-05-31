@@ -1,0 +1,49 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('tags') -%>
+  </td><td>
+  <div id="admin_content">
+
+  <%- if permit?('admin') -%>
+    <div style='margin:5px 0;' class='system_menu'>
+      <%= link_to 'Добавить тег', new_admin_tag_path -%>
+    </div>
+  <%- end -%>
+
+
+  <%- if @tags && @tags.any? -%>
+
+    <table style='margin-top:10px; margin-bottom:10px;'>
+      <tr>
+        <td style='color:#666;padding-right:20px;'><b>ID</b></td>
+        <td style='color:#666;padding-right:20px;'><b>Название</b></td>
+        <td style='color:#666;padding:0 10px;'><b>Рейтинг</b></td>
+        <td style='color:#666;padding:0 10px;'><b>Настроение?</b></td>
+        <td style='color:#666;padding-right:20px;'><b>Кол-во mp3</b></td>
+        <td style='color:#666;'><b>Действия</b></td>
+      </tr>
+
+    <%- @tags.each do |t| -%>
+      <tr>
+        <td><%= t.id -%></td>
+        <td><%= link_to(t.name, edit_admin_tag_path(t)) -%></td>
+        <td style='padding:0 10px; color:green; text-align:center;'><%= t.rating -%></td>
+        <td style='padding:0 10px; text-align:center;'><%= t.is_mood ? "<span style='color:green;'>+</span>" : "<span style='color:red;'>-</span>" -%></td>
+        <td align='center'><%= t.songs.size -%></td>
+        <td>
+          <center>
+            <%= (link_to(image_tag('/images/delete.png', :style => 'border:0;'), admin_tag_path(t), :method => :delete, :confirm => "Удалить тег \"#{t.name}\"?")) if permit?('admin') -%>
+          </center>
+        </td>
+      </tr>
+    <%- end -%>
+    </table>
+
+  <%- else -%>
+      Нет ни одного тега
+  <%- end -%>
+
+  </div>
+</td></tr>
+</table>
+

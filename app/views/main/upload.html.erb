@@ -1,0 +1,89 @@
+<%- content_for :js do -%>
+  <script>
+    function change_tags(){
+      cur_value = $('tags_list').value
+      mass = $('songs_form').getElementsByClassName('cat_select');
+      for (i = 0; i <= mass.length; i++){
+        mass[i].value = cur_value;
+      }
+    }
+
+    function check(){
+      $('upload_div_button').hide();
+      $('upload_div_notice').show();
+      mass_files = $('forma').getInputs('file');
+      mass_tags  = $('songs_form').getElementsByClassName('cat_select');
+      for (i = 0; i < mass_files.length; i++){
+        if (mass_files[i].value.length == 0){
+          Element.update(mass_tags[i], "");
+        }
+      }
+    }
+  </script>
+<%- end -%>
+
+<h2>Загрузи файлы в боткаст!</h2>
+<div id='subscribe'>
+<p>Здесь можно загрузить неограниченное количество файлов MP3 – музыки, подкастов, звуковых эффектов – абсолютно всё, что Вы хотите слушать в своём боткасте. Размер каждого отдельного файла не должен превышать 10 Мб.</p>
+<p>Загружая файлы, назначайте им метки – так их будет легче сортировать по жанрам.</p>
+<p>После загрузки все файлы будут проигрываться в случайном порядке, так что чем больше файлов, тем реже будет звучать каждый из них.</p>
+
+<%- form_for :song, :url => uploading_main_path, :html => {:multipart => true, :id => "forma"} do |form| -%>
+<div id='songs_form' style='margin-bottom:20px;'>
+<table cellpadding='0' cellspacing='0' id='more_file_fields' style='margin-bottom:10px;'>
+  <tr>
+    <td>
+      <div style='font-size:12px; margin-top:15px; float:right; padding-right:7px;'>для всех:</div>
+    </td>
+    <td style='color:#fff; font-size:12px;'>
+      Метки<br/>
+
+      <select id='tags_list' onChange="change_tags();">
+      <%- if @tags_moods && @tags_moods.any?
+
+            anything_tag = @tags_moods.select{|tag| tag.name.eql?("всякое")}.first
+            @tags_moods.delete_if{|tag| tag.name.eql?("всякое")}
+            @tags_moods = [anything_tag] + @tags_moods.sort_by(&:name)
+
+            @tags_moods.each do |t| -%>
+              <option value='<%= t.id -%>'><%= t.name -%></option>
+        <%- end -%>
+              <option disabled>-------------------------</option>
+      <%- end -%>
+
+        <%- if @tags_direct && @tags_direct.any? -%>
+          <%- @tags_direct.sort_by(&:name).each do |t| -%>
+            <option value='<%= t.id -%>'><%= t.name -%></option>
+          <%- end -%>
+        <%- end -%>
+      </select>
+    </td>
+  </tr>
+
+  <%- 10.times do |n| -%>
+    <%= render :partial => "main/mp3_form" -%>
+  <%- end -%>
+</table>
+
+  <h5 style="padding:5px 0 0;">
+    <%= link_to_function('больше файлов &rarr;') do |page|
+      page.insert_html :bottom, "more_file_fields", :partial => "main/mp3_form"
+    end -%>
+  </h5>
+</div>
+
+<div id='upload_div_button'>
+  <p>
+    <input type="checkbox" id="accept_rules" name="accept_rules"/>
+    Загружая файлы, я полностью и безоговорочно соглашаюсь с <a href="/conditions" title="правила bot.fm ">Условиями</a> использования сервиса <a href='/'>bot.fm</a>.
+  </p>
+  <%= submit_tag "Начать загрузку", :onClick => "check();", :class => "button_input", :style => "margin: 0px; width: 150px;" -%>
+</div>
+
+<div id='upload_div_notice' style='font-size:12px; text-align:center; width:150px; display:none;'>
+  Загрузка...<br/>
+  <img src='/images/loader.gif' width="160"/>
+</div>
+
+<%- end -%>
+</div>

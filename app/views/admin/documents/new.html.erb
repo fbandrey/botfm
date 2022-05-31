@@ -1,0 +1,34 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('docs') -%>
+  </td><td>
+  <div id="admin_content">
+
+<h2>Добавление документа</h2>
+
+<%= error_messages_for :document -%>
+
+<%- form_for (:document, :url => admin_documents_path, :html => {:method => 'post'}) do |f| -%>
+
+  <p><label for="document_key">Ключ для URL</label><br/>
+  <%= f.text_field :key -%></p>
+
+  <p><label for="document_title">Заголовок страницы</label><br/>
+  <%= f.text_field :title -%></p>
+
+  <p><label for="document_title_on_main">Название на главной</label><br/>
+  <%= f.text_field :title_on_main -%></p>
+
+  <p><%= f.check_box :is_published, :style => "margin-left:0;" -%>&nbsp;<label for="document_is_published">Показывать на сайте</label></p>
+
+  <p><%= f.check_box :for_main_hint, :style => "margin-left:0;" -%>&nbsp;<label for="document_for_main_hint">Документ для подсказки на главной</label></p>
+
+  <p><label for="document_text">Содержание</label><br/>
+  <%= f.text_area :text, :style => 'width: 900px; height:400px;',:class => 'mceEditor' -%></p>
+
+  <p><%= submit_tag 'Добавить' %> <%= link_to('Назад', admin_documents_path) -%></p>
+<%- end -%>
+
+  </div>
+</td></tr>
+</table>

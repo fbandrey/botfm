@@ -1,0 +1,234 @@
+<%- content_for :js do -%>
+  <%= initialize_sound_manager(false, "/soundmanager2.swf") -%>
+  <%= javascript_include_tag 'slider' -%>
+  <script>
+    current_dj = null;
+    tracks_mass = $A([]);
+    default_help_text = "<%= Document.published.first(:conditions => {:for_main_hint => true}).title rescue "" -%>";
+
+    <%- if @users && @users.any? -%>
+      var dj_names = new Hash();
+      <%- @users.each do |user|-%>
+      dj_names.set(<%= user.id -%>, "<%= h user.name -%>");
+      <%- end -%>
+    <%- end -%>
+
+    soundManager.onload = function() {
+      soundManager.defaultOptions = {
+        'autoLoad': false,
+        'stream': true,
+        'autoPlay': false,
+        'onid3': function() {
+          //$('info_div').innerHTML = this.id3['artist'] + " - " +this.id3['songname'];
+        },
+        'onload': null,
+        'whileloading': null,
+        'onplay': null,
+        'whileplaying': null,
+        'onstop': null,
+        'onfinish': play_next_track,
+        'onbeforefinish': null,
+        'onbeforefinishtime': 5000,
+        'onbeforefinishcomplete':null,
+        'onjustbeforefinish':null,
+        'onjustbeforefinishtime':200,
+        'multiShot': true,
+        'pan': 0,
+        'volume': 70
+      }
+    }
+
+    function get_new_tracks(num, auto_play_next){
+      if (num < 10){
+        new Ajax.Request("<%= get_music_main_path -%>?dj_id="+current_dj+"&id="+Math.floor(Math.random()*10000000000), {
+          method: 'get',
+          onSuccess: function(transport) {
+            mass_result = transport.responseText.split("|");
+            for(i=0; i < mass_result.length;i++){
+              tracks_mass.push(mass_result[i].split("^"));
+            }
+            if (auto_play_next){
+              play_next_track();
+            }
+          },
+          onFailure: function() {
+            // При ошибке отправляем новый запрос через 10 сек.
+            setTimeout("get_new_tracks("+(num+1)+", "+auto_play_next+")", 10000);
+          }
+        });
+      }else{
+        alert("Ошибка! Нет музыкального контента.\nПопробуйте выбрать другого DJ или тег.");
+      }
+    }
+
+    function play_now(my_elem){
+      soundManager.destroySound('Player'+current_dj);
+
+      song_title = my_elem[1];
+      if (song_title == "voice"){
+        $('play_now_div').innerHTML = "Голосовое сообщение";
+      }else{
+        $('play_now_div').innerHTML = song_title;
+      }
+
+      //if (my_url.startsWith('http://podcasts.odiogo.com')){
+      //  server_url = "http://podcasts.odiogo.com/";
+      //  my_url.replace(server_url, "");
+      //}else{
+      //  server_url = "http://#{request.host}:#{request.port}/";
+      //}
+      
+      //  serverURL: server_url,
+      soundManager.createSound({
+        id: 'Player'+current_dj,
+        url: my_elem[0],
+        autoLoad: true,
+        autoPlay: true
+      }).play();
+    }
+
+    function stopAllDjs(){
+      $('help_content_div').innerHTML = default_help_text;
+      $('play_now_div').innerHTML = "";
+      $('play_button_main').src = "/images/bot_play.gif";
+      <%- @users.each do |user| -%>
+      $('play_button_<%= user.id -%>').src = "/images/bot_play.gif";
+      <%- end -%>
+    }
+
+    function start_active_dj(){
+      <%- if @active_dj -%>
+        toggleButton(<%= @active_dj.id -%>);
+        move_to_dj(<%= @active_dj.id -%>);
+      <%- end -%>
+    }
+
+    function fb_win(u,t,p){
+      window.open('http://www.facebook.com/sharer.php?s=100&p[url]='+encodeURIComponent(u)+'&p[title]='+encodeURIComponent(t)+'&p[images][0]='+encodeURIComponent(p)+'&p[images][1]='+encodeURIComponent('http://bot.fm/images/logo.gif'),'sharer','toolbar=0,status=0,width=626,height=436,top=200,left=350');
+      return false;
+    }
+
+    function tw_win(t){
+      window.open('http://twitter.com/share?text='+encodeURIComponent(t)+'&url=','sharer','toolbar=0,status=0,width=626,height=436,top=200,left=350');
+      return false;
+    }
+  </script>
+<%- end -%>
+
+<div id='superMain'>
+  <div id="mainContent">
+    <div id='slider' style='width:<%= @users && @users.any? ? (@users.size * 262) : 0 -%>px;'>
+      <%- if @users && @users.any? -%>
+        <ul>
+          <%- @users.each_with_index do |user, ind| -%>
+		  <li class='dj<%= " active" if user == @active_dj -%>' style='<%= "margin-right:0;" if ind == @users.size-1 -%>' id="dj_<%= user.id -%>">
+              <h2>
+                <%= link_to("DJ " + h(user.name), dj_path(user.name), :style => "border:0;") -%>
+                <div style='clear:both;'></div>
+              </h2>
+
+              <div class="avaplayer">
+                  <%= image_tag(user.photo ? user.photo.public_filename(:main) : "/images/nophoto.gif", :id => 'avatar', :title => "DJ " + h(user.name)) -%>
+                  <div class="playerbutton" onMouseOver="highlightButton(<%= user.id -%>, true)" onMouseOut="highlightButton(<%= user.id -%>, false)">
+                    <%= link_to_function(image_tag("/images/bot_play.gif", :style => "border:0;", :id => "play_button_#{user.id}"), "toggleButton(#{user.id})") -%>
+                  </div>
+		  <div class="socialize">
+                    <div class='spread'>
+                      <script type="text/javascript" src="http://vkontakte.ru/js/api/share.js?9" charset="windows-1251"></script>
+                      <script type="text/javascript">
+                      document.write(VK.Share.button({
+                        url: 'http://bot.fm/dj/<%= user.name -%>',
+                        title: 'Слушать DJ <%= user.name -%> на Bot.FM',
+                        description: 'Bot.FM — Новая радиосвобода',
+                        image: 'http://bot.fm<%= user.photo ? user.photo.public_filename(:main) : "/images/nophoto.gif" -%>',
+                        noparse: true
+                      }, {type: 'custom', text: '<img src="/images/icon-vk.png" border="0" title="ВКонтакте">'}));
+                      </script>
+
+                      <!--<div class='twshare left'>
+                        <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">TW</a>
+                        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+                      </div>
+                      -->
+
+                      <a href="#" onClick="return tw_win('Слушать DJ <%= user.name -%> на Bot.FM — http://bot.fm/dj/<%= user.name -%>');">
+                        <img src="/images/icon-tw.png" border="0" title="Twitter">
+                      </a>
+
+                      <!-- <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+                      <fb:like href="http://bot.fm/dj/<%= user.name -%>" layout="button_count" show_faces="true" width="450" font=""></fb:like>
+                      -->
+
+                      <a href="#" onClick="return fb_win('http://bot.fm/dj/<%= user.name -%>','Слушать DJ <%= user.name -%> на Bot.FM', 'http://bot.fm<%= user.photo ? user.photo.public_filename(:main) : "/images/nophoto.gif" -%>');">
+                        <img src="/images/icon-fb.png" border="0" title="FaceBook">
+                      </a>
+                    </div> 
+		  </div>
+                  <%- 
+                    cur_tags = []
+                    user.songs.each{|song| cur_tags << song.tags; cur_tags.flatten!}
+                    cur_tags.uniq!
+
+                    mood_tags = cur_tags.select{|tag| tag.is_mood == true}
+                    other_tags = cur_tags - mood_tags
+
+                    if mood_tags && mood_tags.any? -%>
+                      <%- mood_tags.sort_by(&:name).each do |tag| -%>
+                        <h6><%= link_to(tag.name, tag_path(:name => tag.name)) -%></h6>
+                      <%- end -%>
+                <%- end -%>
+
+                <%- if other_tags && other_tags.any? -%>
+                      <%- other_tags.sort_by(&:name).each do |tag| -%>
+                        <h6><%= link_to(tag.name, tag_path(:name => tag.name)) -%></h6>
+                      <%- end -%>
+                <%- end -%>
+              </div>
+              <div class="djtext">
+                <%= user.description -%>
+              </div>
+            </li>
+          <%- end -%>
+        </ul>
+      <%- end -%>
+    </div>
+
+    <div style='clear:both;'></div>
+  </div>
+
+  <%#- ########## END MAIN_CONTENT ########### -%>
+
+  <div id="djs-wrap">
+    <div id="djs-track">
+      <div id="djs-handle" style="display:block;"><img src="/images/slider_handle.png"/></div>
+    </div>
+  </div>
+
+  <%- slider_value = 0 -%>
+
+  <script type="text/javascript" language="javascript">
+    // horizontal slider control
+    var slider4 = new Control.Slider('djs-handle', 'djs-track', {
+      onSlide: function(v) { scrollHorizontal(v, $('mainContent'), slider4);  },
+      onChange: function(v) { scrollHorizontal(v, $('mainContent'), slider4); },
+      sliderValue: <%= slider_value -%>
+    });
+    slider4.setValue(<%= slider_value -%>);
+    // scroll the element horizontally based on its width and the slider maximum value
+    function scrollHorizontal(value, element, slider) {
+      element.scrollLeft = Math.round(value/slider.maximum*(element.scrollWidth-element.offsetWidth));
+    }
+
+    setTimeout('start_active_dj()', 1500);
+  
+    // disable horizontal scrolling if text doesn't overflow the div
+      if ($('mainContent').scrollWidth <= $('mainContent').offsetWidth) {
+        slider4.setDisabled();
+        $('djs-handle').hide();
+      }
+  // ]]>
+  </script>
+
+</div>
+
+<%= footer_info_block -%>

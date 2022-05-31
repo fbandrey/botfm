@@ -1,0 +1,40 @@
+<table border="0">
+  <tr><td>
+      <%= admin_menu('people') -%>
+  </td><td>
+  <div id="admin_content">
+
+<%- if @users && @users.any? -%>
+
+  <table style='margin-top:10px; margin-bottom:10px;'>
+    <tr>
+      <td style='color:#666;padding:0 10px;'><b>ID</b></td>
+      <td style='color:#666;padding:0 10px;'><b>Login</b></td>
+      <td style='color:#666;padding:0 10px;'><b>Рейтинг</b></td>
+      <td style='color:#666;padding:0 10px;'><b>DJ</b></td>
+      <td style='color:#666;padding:0 10px;'><b>E-mail</b></td>
+      <!-- <td style='color:#666;padding:0 10px;'><b>Ban</b></td> -->
+      <td style='color:#666;'><b>Действия</b></td>
+    </tr>
+
+    <%- @users.each do |user| -%>
+      <tr>
+        <td style='padding:0 10px;'><%= user.id -%></td>
+        <td style='padding:0 10px;'><%= user.login -%></td>
+        <td style='padding:0 10px; color:green; text-align:center;'><%= user.rating -%></td>
+        <td style='padding:0 10px;'><%= user.name -%></td>
+        <td style='padding:0 10px;'><%= user.email -%></td>
+        <!-- <td align='center'><%#= user.have_ban ? "<b style='color:red;'>+</b>" : "—" -%></td> -->
+        <td align='center'><%= link_to(image_tag("/images/edit.png", :style => "border:0;"), edit_admin_user_path(user)) if logged_in? && permit?('admin') -%>
+        <%= link_to(image_tag('/images/delete.png', :style => 'border:0;'), admin_user_path(user), :method => :delete, :confirm => "Удалить?") -%></td>
+      </tr>
+    <%- end -%>
+  </table>
+
+<%- else -%>
+    Нет ни одного пользователя
+<%- end -%>
+
+  </div>
+</td></tr>
+</table>

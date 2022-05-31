@@ -1,0 +1,27 @@
+html, body {font-family: Verdana, Tahoma, Arial; font-size:14px; color:#999;}
+
+a {color:#666;}
+a:hover {text-decoration:none;}
+
+a.flash_link {color:blue; text-decoration:underline;}
+a.flash_link:hover {color:blue; text-decoration:none;}
+
+div.system_menu a {background-color:#666; color:#fff; padding:0 3px 3px 3px; text-decoration:none;}
+div.system_menu a:hover {background-color:#fff; color:#666; text-decoration:underline;}
+
+div.admin_menu{
+  font-size       :14px;
+  color           :#999;
+  border-bottom   :1px dashed #999;
+  padding-bottom  :5px;
+}
+
+div.admin_menu a.active {font-weight:bold; color:#333;}
+
+span.flash_notice{
+  font-size:12px; background-color:#00a300; color:#fff; padding:5px; border:1px solid #666;
+}
+
+span.flash_error{
+  font-size:12px; background-color:#bc0101; color:#fff; padding:5px; border:1px solid #666;
+}

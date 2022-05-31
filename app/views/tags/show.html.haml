@@ -1,0 +1,149 @@
+- content_for :js do
+  = initialize_sound_manager(false, "/soundmanager2.swf")
+
+  :javascript
+    playing = null;
+    tracks_mass = $A([]);
+
+    soundManager.onload = function() {
+      soundManager.defaultOptions = {
+        'autoLoad': false,
+        'stream': true,
+        'autoPlay': false,
+        'onid3': function() {
+        },
+        'onload': null,
+        'whileloading': null,
+        'onplay': null,
+        'whileplaying': null,
+        'onstop': null,
+        'onfinish': play_next_track,
+        'onbeforefinish': null,
+        'onbeforefinishtime': 5000,
+        'onbeforefinishcomplete':null,
+        'onjustbeforefinish':null,
+        'onjustbeforefinishtime':200,
+        'multiShot': true,
+        'pan': 0,
+        'volume': 80
+      }
+    }
+
+    function toggleButton(){
+      if (playing && playing == true){
+        $('play_button').src = "/images/bot_play.gif";
+        playing = null;
+        $('help_content_div').innerHTML = "Метка «#{@tag.name}»";
+        $('play_now_div').innerHTML = "";
+        soundManager.stopAll();
+      }else{
+        soundManager.destroySound('TagPlayer');
+        $('play_button').src = "/images/bot_pause.gif";
+        tracks_mass = [];
+        playing = true;
+
+        content = "<div style='float:left; margin-right:10px;'>Метка «#{@tag.name}»</div>";
+        content += "<div id='refresh' style='float:left;'><a href='#' onmouseover=\"MM_swapImage('refresh_button','','/images/refresh_h.png',1)\" onmouseout=\"MM_swapImgRestore()\" onClick='play_next_track(); return false;'><img id='refresh_button' title='Пропустить' src='/images/refresh.png' style='border:0;' /></a></div><div style='clear:both;'></div>";
+        $("help_content_div").innerHTML = content;
+
+        get_new_tracks(0, true);
+      }
+    }
+
+    function highlightButton(light){
+      play_file_path = light ? "/images/bot_play_hover.gif" : "/images/bot_play.gif";
+      pause_file_path = light ? "/images/bot_pause_hover.gif" : "/images/bot_pause.gif";
+      if (playing == true){
+        $("play_button").src = pause_file_path;
+      }else{
+        $("play_button").src = play_file_path;
+      }
+    }
+
+    function get_new_tracks(num, auto_play_next){
+      if (num < 10){
+        new Ajax.Request("#{get_music_main_path}?tag_id=#{@tag.id}&id="+Math.floor(Math.random()*10000000000), {
+          method: 'get',
+          onSuccess: function(transport) {
+            mass_result = transport.responseText.split("|");
+            for(i=0; i < mass_result.length;i++){
+              tracks_mass.push(mass_result[i].split("^"));
+            }
+            if (auto_play_next){
+              play_next_track();
+            }
+          },
+          onFailure: function() {
+            // При ошибке отправляем новый запрос через 10 сек.
+            setTimeout("get_new_tracks("+(num+1)+", "+auto_play_next+")", 10000);
+          }
+        });
+      }else{
+        alert("Ошибка! Нет музыкального контента.\nПопробуйте выбрать другого DJ или тег.");
+      }
+    }
+
+    function get_next_track(){
+      current_track = "";
+      if (tracks_mass.length > 0){
+        if (tracks_mass.length > 1){
+            current_track = tracks_mass.shift();
+        }else{
+            current_track = tracks_mass;
+            tracks_mass = [];
+        }
+      }
+      return current_track;
+    }
+
+    function play_next_track(){
+      // Если еще есть треки
+      if (tracks_mass.length > 0){
+        // Если плейлист заканчивается - загружаем новую порцию
+        if (tracks_mass.length <= 2){
+          get_new_tracks(0, true);
+        }else{
+          play_now(get_next_track());
+        }
+      }else{
+        alert("Ошибка! Нет музыкального контента");
+      }
+    }
+
+    function play_now(my_elem){
+      soundManager.destroySound('TagPlayer');
+
+      song_title = my_elem[1];
+      if (song_title == "voice"){
+        $('play_now_div').innerHTML = "Голосовое сообщение";
+      }else{
+        $('play_now_div').innerHTML = song_title ? song_title : "Нет контента";
+      }
+      
+      soundManager.createSound({
+        id: 'TagPlayer',
+        url: my_elem[0],
+        autoLoad: true,
+        autoPlay: true
+      }).play();
+    }
+
+#superMain
+  #mainContent_tags
+    /%h2= "<span class='grayccc'>метка:</span> #{@tag.name}"
+    .playerbutton
+      %a{:href => "#", :onmouseout => "$('play_button').src='/images/bot_play.gif'", :onmouseover => "$('play_button').src='/images/bot_play_hover.gif'"}
+        = link_to_function(image_tag("/images/bot_play.gif", :style => "border:0;", :id => "play_button", :onMouseOver => "highlightButton(true)", :onMouseOut => "highlightButton(false)"), "toggleButton()")
+
+    - if @tag_users && @tag_users.any?
+      %ul
+        - @tag_users.each do |user|
+          %li.djtags
+            = "<span class='grayccc'>DJ</span> #{link_to(user.name, dj_path(user.name))}"
+    - else
+      Нет пользователей с такой меткой
+
+    :javascript
+      setTimeout('toggleButton()', 1500);
+
+= footer_info_block

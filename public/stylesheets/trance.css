@@ -1,0 +1,646 @@
+@charset "utf-8";
+body  {
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #2D3C3F;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 100%;
+	background-image: url(/images/checker.gif);
+}
+.style1 {color: #99CC00}
+
+#help_button {
+        cursor: pointer;
+        height: 32px;
+        width: 32px;
+	background-image: url(/images/help_a.png);
+}
+
+.add_buttons div {float:left; margin-top:20px;}
+
+.red_input   {color: red;}
+
+#help_content {
+	text-size:80%;
+	margin: 10;
+	width: 760px;
+	background: #FFFFFF;
+	border: 1px solid #99CC00;
+	position: absolute;
+	left: 0px;
+	top: 48px;
+	overflow: visible;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	height: 142px;
+}
+
+.thrColAbsHdr #container {
+	position: relative; /* adding position: relative allows you to position the two sidebars relative to this container */
+	width: 780px;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+	padding: 20px 0 0 0;
+	margin-top: 0;
+	margin-right: auto;
+	margin-bottom: 0;
+	margin-left: auto;
+} 
+
+/* Tips for absolutely positioned sidebars with header and footer:
+1. Absolutely positioned (AP) elements must be given a top and side value, either right or left. (As a default, if no top value is given, the AP element will begin directly after the last element in the source order of the page. This means, if the sidebars are first element in the #container in the document's source order, they will appear at the top of the #container even without being given a top value. However, if they are moved later in the source order for any reason, they'll need a top value to appear where you desire.
+2. Absolutely positioned (AP) elements are taken out of the flow of the document. This means the elements around them don't know they exist and don't account for them when taking up their proper space on the page. Thus, an AP div should only be used as a side column if you are sure the middle #mainContent div will always contain the most content. If either sidebar were to contain more content, that sidebar would run over the bottom of the parent div, and in this case the footer as well, and the sidebar would not appear to be contained.
+3. If the above mentioned requirements are met, absolutely positioned sidebars can be an easy way to control the source order of the document.
+4. If the source order is changed, the top value should be equal to the height of the header since this will cause the columns to visually meet the header.
+*/
+.thrColAbsHdr #header {
+	height: 80px;
+	padding: 0;
+	margin: 0 auto;
+	position: relative; /* adding position: relative allows you to position the two sidebars relative to this container */
+	width: 780px;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+	padding: 0px;
+	z-index: 1000;
+} 
+*html .thrColAbsHdr #header {
+	height: 100px;
+} 
+*+html .thrColAbsHdr #header {
+	height: 100px;
+} 
+.thrColAbsHdr #header h1 {
+	margin: 0;
+	color: #515C5E;
+	float: left;
+	position: absolute;
+	padding: 10px 0px 0px;
+	width: 380px;
+	font-weight: lighter;
+	letter-spacing: 3px;
+}
+.thrColAbsHdr #sidebar1 {
+	position: absolute;
+	left: 0;
+	width: 330px; /* padding keeps the content of the div away from the edges */
+	height: 450px;
+	margin-top: 0px;
+	padding-top: 5px;
+	padding-right: 20px;
+	padding-bottom: 15px;
+	padding-left: 25px;
+	border: 2px solid #E1DED9;
+	overflow: auto;
+	margin-bottom: 0px;
+	z-index: 50;
+	background: url(/images/checker.gif);
+}
+.thrColAbsHdr #sidebar2 {
+	width: 330px; /* padding keeps the content of the div away from the edges */
+	height: 450px;
+	margin-top: 0px;
+	padding-top: 5px;
+	padding-right: 20px;
+	padding-bottom: 15px;
+	padding-left: 25px;
+	border: 2px solid #E1DED9;
+	overflow: auto;
+	margin-bottom: 0px;
+	position: absolute;
+	left: 400px;
+	z-index: 50;
+	background-image: url(/images/checker.gif);
+}
+.thrColAbsHdr #mainContent {
+	height: 470px;
+	margin-top: 0px;
+	margin-bottom: 0;
+	margin-left: 380px;
+	padding-top: 0;
+	padding-right: 0px;
+	padding-bottom: 0;
+	padding-left: 0px;
+	width: 20px;
+}
+.thrColAbsHdr #footer {
+	height: 320px;
+	position: relative; /* adding position: relative allows you to position the two sidebars relative to this container */
+	width: 780px;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+	padding: 0px;
+	top: 10px;
+	margin: 0px auto 0;
+	border-bottom: 1px solid #C0C0C0;
+
+} 
+*html .thrColAbsHdr #footer {
+	margin-top: 15px;
+} 
+*+html .thrColAbsHdr #footer {
+	margin-top: 15px;
+} 
+.thrColAbsHdr #footer p {
+	margin: 0; /* zeroing the margins of the first element in the footer will avoid the possibility of margin collapse - a space between divs */
+	padding: 10px 0; /* padding on this element will create space, just as the the margin would have, without the margin collapse issue */
+}
+
+#sidebar1 p, #sidebar2 p {
+	font-size: 120%;
+	font-weight: bold;
+	color: #666666;
+
+}
+#sidebar1 p a, #sidebar2 p a {
+	color: #FFFFFF;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 7px;
+	background-color: #999999;
+	font-weight: bold;
+	font-size: 80%;
+	height: 20px;
+	padding-right: 5px;
+	padding-left: 5px;
+	text-decoration: none;
+}
+#sidebar1 p a:hover, #sidebar2 p a:hover {
+	color: #FFFFFF;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 7px;
+	background-color: #99CC00;
+	font-weight: bold;
+	font-size: 80%;
+	height: 20px;
+	padding-right: 5px;
+	padding-left: 5px;
+	text-decoration: none;
+}
+#header .register  {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 90%;
+	float: right;
+	width: 300px;
+	text-align: right;
+	padding-top: 20px;
+	height: 20px;
+}
+
+
+#header .register a {
+	color: #333333;
+	text-decoration: underline;
+	background-color: #E1DED9;
+	display: inline-block;
+	padding: 2px 8px;
+	height: 20px;
+}
+#header .register a:hover {
+	color: #333333;
+	text-decoration: underline;
+	background-color: #99CC00;
+	padding-top: 2px;
+	padding-right: 8px;
+	padding-bottom: 2px;
+	padding-left: 8px;
+
+}
+#header #addthis {
+	clear: none;
+	float: right;
+	width: 760px;
+	font-size: 90%;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #333333;
+	background-color: #E1DED9;
+	position: absolute;
+	background-repeat: no-repeat;
+	background-position: right center;
+	margin: 50px 0px 0px;
+	padding: 5px 10px;
+	z-index: 100;
+	height: 33px;
+}
+#header #addthis p {
+	display: inline-block;
+	float: left;
+	vertical-align: baseline;
+	margin: 5px 0px 0px;
+	padding: 0px;
+	height: 30px;
+
+}
+#header #player_container {
+	background: #333333;
+	height: 45px;
+	width: 780px;
+	position: absolute;
+	z-index: 200;
+	top: 500px;
+	visibility: hidden;
+}
+.CollapsiblePanelContent a {
+	text-decoration: none;
+}
+.CollapsiblePanelContent a:link {
+	color: #666666;
+	text-decoration: none;
+	border-bottom: 1px dotted #333333;
+}
+.CollapsiblePanelContent a:visited {
+	color: #666666;
+	text-decoration: none;
+	border-bottom: 1px dotted #333333;
+}
+
+.CollapsiblePanelContent a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px solid #333333;
+}
+
+
+
+.fltrt { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page */
+	float: left;
+	margin-right: 8px;
+}
+
+a.post_link {
+	background-color:#D0CBC4;
+	color: #000000;
+	padding: 5px 8px 5px 8px;
+	margin-right: 8px;
+	margin-left: 8px;
+	display: inline-block;
+	vertical-align: middle;
+	border: 1px solid #B6B6B6;
+	text-decoration: none;
+}
+
+
+a.post_link:hover {
+	background-color:#99CC00;
+	text-decoration:underline;
+	border: 1px solid #FFFFFF;
+}
+#container #sidebar1 h3, #container #sidebar2 h3 {
+	font-size: 140%;
+	display: block;
+	padding: 5px 0px 3px 40px;
+	clear: both;
+	margin: 0px -20px;
+	width: 300px;
+	background: #D4D0C8;
+	color: #515C5E;
+}
+
+#container #sidebar1 li, #container #sidebar2 li {
+	padding: 0px;
+	color: #D4D0C8;
+	height: 18pt;
+	display: list-item;
+	background-color: #ECEAE6;
+	margin: 0px 5px 6px -20px;
+	font-weight: bold;
+}
+*html #container #sidebar1 li, *html #container #sidebar2 li {
+	margin: 0px 5px 2px -20px;
+}
+*+html #container #sidebar1 li, *+html #container #sidebar2 li {
+	margin: 0px 5px 2px -20px;
+}
+#container #sidebar1 li a, #container #sidebar2 li a {
+	color: #515C5E;
+	padding: 3px 5px 3px 5px;
+	text-decoration: none;
+	background-color: #D4D0C8;
+	margin: 0px;
+	float: left;
+	position: absolute;
+}
+#container #sidebar1 li a {
+	background-position: right center;
+	background-repeat: no-repeat;
+}
+#container #sidebar2 li a {
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+
+
+
+#container #sidebar1 li.selected a {
+        color: pink;
+	padding: 3px 5px 3px 5px;
+	background-color: #000;
+}
+#container #sidebar1 li.selected #play a{
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/stop_a.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #D4D0C8;
+	height: 25px;
+	width: 28px;
+}
+#container #sidebar1 li.selected #play a:hover {
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/stop_h.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #ffff00;
+	height: 25px;
+	width: 28px;
+}
+
+
+
+
+#container #sidebar1 li a:hover, #container #sidebar2 li a:hover {
+	color: #000000;
+	text-decoration: none;
+	background-color: #FFFF00;
+	padding: 3px 5px 3px 5px;
+}
+#container #sidebar1 li a:hover {
+	background-color: #FFFF00;
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+#container #sidebar2 li a:hover {
+	background-color: #FF6699;
+
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#container #sidebar1 li #play  {
+	padding: 0px;
+	color: #2D3C3F;
+	font-size: 120%;
+	float: right;
+	position: relative;
+	margin: 0 20px 0 0;
+}
+#container #sidebar1 li #play a{
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/play_a.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #D4D0C8;
+	height: 25px;
+	width: 28px;
+}
+#container #sidebar1 li #play a:hover {
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/play_h.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #ffff00;
+	height: 25px;
+	width: 28px;
+}
+
+#container #sidebar2 li #plus  {
+	padding: 0px;
+	color: 2D3C3F;
+	font-size: 120%;
+	float: right;
+	position: relative;
+	margin-top: 0px;
+	margin-right: 20px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+}
+#container #sidebar2 li #plus a{
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/plus_a.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #D4D0C8;
+	height: 25px;
+	width: 28px;
+}
+#container #sidebar2 li #plus a:hover {
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	background-image: url(/images/plus_h.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: ff6699;
+	height: 25px;
+	width: 28px;
+}
+
+.tooltip { position:relative; z-index:24; }
+.tooltip span { display:none;}
+.tooltip:hover {z-index:25;}
+.tooltip:hover span {
+	display:block;
+	position:absolute;
+	top:-30px;
+	left:0px;
+	padding:4px 5px 5px;
+	font-size:70%;
+	color:#333333;
+	text-decoration:none;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	width: 300px;
+	background-image: url(/images/bubble.png);
+	overflow: visible;
+	background-repeat: no-repeat;
+	background-position: left top;
+	height: 30px;
+}
+
+.CollapsiblePanelContent strong {
+	font-weight: normal;
+	color: #99CC00;
+}
+.CollapsiblePanelContent ul {
+	margin: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-left: 20px;
+	text-align: left;
+}
+.CollapsiblePanelContent li {
+	margin-bottom: 5px;
+}
+
+.CollapsiblePanelContent #pointer {
+	position: absolute;
+	top: -15px;
+}
+
+/* SpryCollapsiblePanel.css - Revision: Spry Preview Release 1.4 */
+
+/* Copyright (c) 2006. Adobe Systems Incorporated. All rights reserved. */
+
+/* This is the selector for the main CollapsiblePanel container. For our
+ * default style, the CollapsiblePanel is responsible for drawing the borders
+ * around the widget.
+ *
+ * If you want to constrain the width of the CollapsiblePanel widget, set a width on
+ * the CollapsiblePanel container. By default, our CollapsiblePanel expands horizontally to fill
+ * up available space.
+ *
+ * The name of the class ("CollapsiblePanel") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style the
+ * CollapsiblePanel container.
+ */
+
+/* This is the selector for the CollapsiblePanelTab. This container houses
+ * the title for the panel. This is also the container that the user clicks
+ * on to open or close the panel.
+ *
+ * The name of the class ("CollapsiblePanelTab") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style an
+ * CollapsiblePanel panel tab container.
+ */
+.CollapsiblePanelTab {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* This is the selector for a CollapsiblePanel's Content area. It's important to note that
+ * you should never put any padding on the content area element if you plan to
+ * use the CollapsiblePanel's open/close animations. Placing a non-zero padding on the content
+ * element can cause the CollapsiblePanel to abruptly grow in height while the panels animate.
+ *
+ * The name of the class ("CollapsiblePanelContent") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style a
+ * CollapsiblePanel content container.
+.CollapsiblePanelContent {
+	text-size:80%;
+	margin: 10;
+	width:760px;
+	background: #FFFFFF;
+	border: 1px solid #99CC00;
+	position: absolute;
+	left: 0px;
+	top: 48px;
+	overflow: visible;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	height: auto;
+}
+ */
+
+/* An anchor tag can be used inside of a CollapsiblePanelTab so that the
+ * keyboard focus ring appears *inside* the tab instead of around the tab.
+ * This is an example of how to make the text within the anchor tag look
+ * like non-anchor (normal) text.
+ */
+.CollapsiblePanelTab a {
+	margin: 0 0 10px 0;
+}
+
+/* This is an example of how to change the appearance of the panel tab that is
+ * currently open. The class "CollapsiblePanelOpen" is programatically added and removed
+ * from panels as the user clicks on the tabs within the CollapsiblePanel.
+ */
+.CollapsiblePanelOpen .CollapsiblePanelTab {
+	float: right;
+	vertical-align: middle;
+	padding: 0px;
+	display: inline-block;
+	margin-right: 0px;
+	margin-left: 0px;
+	border-width: 0px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	z-index: 1000;
+}
+
+/* This is an example of how to change the appearance of the panel tab as the
+ * mouse hovers over it. The class "CollapsiblePanelTabHover" is programatically added
+ * and removed from panel tab containers as the mouse enters and exits the tab container.
+ */
+.CollapsiblePanelTabHover,  .CollapsiblePanelOpen .CollapsiblePanelTabHover {
+	margin: 0 0 10px 0;
+	z-index: 1000;
+}
+
+/* This is an example of how to change the appearance of all the panel tabs when the
+ * CollapsiblePanel has focus. The "CollapsiblePanelFocused" class is programatically added and removed
+ * whenever the CollapsiblePanel gains or loses keyboard focus.
+ */
+.CollapsiblePanelFocused .CollapsiblePanelTab {
+	margin: 0 0 10px 0;
+	z-index: 1000;
+}
+
+
+
+#addthis #CollapsiblePanel1 {
+	float: right;
+	vertical-align: middle;
+	padding: 0px;
+	display: inline-block;
+	margin-right: 0px;
+	margin-left: 0px;
+	border-width: 0px;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	z-index: 1000;
+}
+
+
+
+#footer #player {
+	float: left;
+	height: 23px;
+
+}
+#footer #select_tags {
+	display: block;
+	margin: 10px 0 0 0;
+	float: right;
+	width: 560px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 70%;
+	text-align: left;
+	background-color: #f4f4f4;
+	padding: 5px 10px;
+}
+#select_tags a {
+	padding-top: 2px;
+	padding-right: 4px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	color: #666666;
+        line-height: 20px;
+}
+
+#select_tags a:link {
+	color: #999999;
+}
+#select_tags a:hover {
+	color: #000000;
+	text-decoration: none;
+	background-color: #FF6699;
+}
